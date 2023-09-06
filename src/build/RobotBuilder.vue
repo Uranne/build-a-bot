@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div class="content" v-if="partsStore.parts">
     <div class="preview">
       <CollaspibleSection>
       <div class="preview-content">
@@ -24,52 +24,38 @@
         {{ selectedRobot.head.title }}
         <span v-if="selectedRobot.head.onSale" class="sale">Sale !</span>
       </div>
-      <PartSelector :parts="availableParts.heads" position="top"
+      <PartSelector :parts="partsStore.parts.heads" position="top"
       @partSelected="part => selectedRobot.head = part" />
     </div>
     <div class="middle-row">
-      <PartSelector :parts="availableParts.arms" position="left"
+      <PartSelector :parts="partsStore.parts.arms" position="left"
       @partSelected="part => selectedRobot.leftArm = part" />
-      <PartSelector :parts="availableParts.torsos" position="center"
+      <PartSelector :parts="partsStore.parts.torsos" position="center"
       @partSelected="part => selectedRobot.torso = part" />
-      <PartSelector :parts="availableParts.arms" position="right"
+      <PartSelector :parts="partsStore.parts.arms" position="right"
       @partSelected="part => selectedRobot.rightArm = part" />
     </div>
     <div class="bottom-row">
-      <PartSelector :parts="availableParts.bases" position="bottom"
+      <PartSelector :parts="partsStore.parts.bases" position="bottom"
       @partSelected="part => selectedRobot.base = part" />
     </div>
-  </div>
-  <div>
-    <h1>Cart</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>Robot</th>
-          <th class="cost">Cost</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(robot, index) in cart" :key="index">
-          <td>{{ robot.head.title }}</td>
-          <td class="cost">{{ toCurrency(robot.cost) }}</td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </template>
 
 <script setup>
 import {
-  computed, ref, reactive, onMounted,
+  computed, ref, onMounted,
 } from 'vue';
 import CollaspibleSection from '@/shared/CollaspibleSection.vue';
-import parts from '../data/parts';
-import { toCurrency } from '../shared/formatters';
 import PartSelector from './PartSelector.vue';
 
-const availableParts = parts;
-const cart = reactive([]);
+import { userCartStore } from '../stores/cartStore';
+import { usePartsStore } from '../stores/partsStore';
+
+const cartStore = userCartStore();
+const partsStore = usePartsStore();
+
+partsStore.getParts();
 
 onMounted(() => console.log('onMounted executed'));
 const selectedRobot = ref(({
@@ -89,7 +75,7 @@ const addToCart = () => {
     robot.torso.cost +
     robot.rightArm.cost +
     robot.base.cost;
-  cart.push({ ...robot, cost });
+  cartStore.cart.push({ ...robot, cost });
 };
 
 </script>

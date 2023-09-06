@@ -9,8 +9,11 @@
 
 <script setup>
 import { computed } from 'vue';
-import parts from '../data/parts';
+
+import { usePartsStore } from '../stores/partsStore';
+
+const partsStore = usePartsStore();
 
 const props = defineProps(['partType', 'id']);
-const part = computed(() => parts[props.partType].find((p) => p.id === +props.id));
+const part = computed(() => partsStore.parts[props.partType].find((p) => p.id === +props.id));
 </script>

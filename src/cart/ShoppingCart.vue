@@ -15,11 +15,15 @@
       <tbody>
         <tr v-for="(robot, index) in cartStore.cart" :key="index">
           <td class="robot-title">
-            <img :src="robot.head.imageUrl" /> {{ robot.head.title }}
+            <img :src="robot.head.imageUrl" alt="plop"/> {{ robot.head.title }}
           </td>
           <td class="cost">
             {{ toCurrency(robot.cost) }}
           </td>
+        </tr>
+        <tr class="total">
+          <td>Total</td>
+          <td>{{ toCurrency(cartStore.cartTotal) }}</td>
         </tr>
       </tbody>
     </table>
@@ -28,9 +32,9 @@
 
 <script setup>
 import { toCurrency } from '../shared/formatters';
-import { useCartStore } from '../stores/cartStore';
+import { userCartStore } from '../stores/cartStore';
 
-const cartStore = useCartStore();
+const cartStore = userCartStore();
 </script>
 
 <style scoped>
@@ -53,5 +57,8 @@ th {
 }
 .cost {
   text-align: right;
+}
+.total{
+  font-weight: bold;
 }
 </style>
